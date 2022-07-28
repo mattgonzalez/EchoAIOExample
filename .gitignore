@@ -1,0 +1,17 @@
+*.VC.db
+Debug/
+Release/
+.vs/
+.suo
+*.opendb
+*.sdf
+*.suo
+*.user
+*.exe
+.suo
+.vs/
+Thumbs.db
+*.dll
+*.lib
+*.dylib
+x64/
