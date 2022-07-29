@@ -15,3 +15,4 @@ Thumbs.db
 *.lib
 *.dylib
 x64/
+DerivedData/
