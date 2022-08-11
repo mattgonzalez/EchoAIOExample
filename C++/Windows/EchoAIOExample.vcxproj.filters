@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\EchoAIOInterface.h">
+    <ClInclude Include="..\..\EchoAIOInterface.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

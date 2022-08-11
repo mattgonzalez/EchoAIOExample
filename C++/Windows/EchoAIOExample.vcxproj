@@ -130,7 +130,7 @@
     <ClCompile Include="EchoAIOExample.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\EchoAIOInterface.h" />
+    <ClInclude Include="..\..\EchoAIOInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

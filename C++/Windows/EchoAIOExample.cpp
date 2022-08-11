@@ -1,6 +1,6 @@
 #include <iostream>
 #include <Windows.h>
-#include "../EchoAIOInterface.h"
+#include "../../EchoAIOInterface.h"
 
 void libraryAccessDemo(HMODULE handle)
 {

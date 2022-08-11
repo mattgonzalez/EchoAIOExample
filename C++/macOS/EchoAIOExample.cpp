@@ -1,6 +1,6 @@
 #include <iostream>
 #include <dlfcn.h>
-#include "../EchoAIOInterface.h"
+#include "../../EchoAIOInterface.h"
 
 void libraryAccessDemo(void* handle)
 {
