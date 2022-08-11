@@ -24,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		C92A923F28935AF600474EE3 /* EchoAIOExample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EchoAIOExample; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9B99BB428A59D72009618B6 /* EchoAIOInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EchoAIOInterface.h; path = ../../EchoAIOInterface.h; sourceTree = "<group>"; };
 		C9C6967C28935BBF00F7B0D0 /* EchoAIOExample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EchoAIOExample.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -41,6 +42,7 @@
 		C92A923628935AF600474EE3 = {
 			isa = PBXGroup;
 			children = (
+				C9B99BB428A59D72009618B6 /* EchoAIOInterface.h */,
 				C9C6967C28935BBF00F7B0D0 /* EchoAIOExample.cpp */,
 				C92A924028935AF600474EE3 /* Products */,
 			);
