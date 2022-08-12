@@ -28,7 +28,7 @@ echoaio.AIO_initialize()
 #
 inputChannel = 2  # MIC3
 gain = 100        # 100X Gain
-if(echoaio.AIO_setInputGain(inputChannel, gain) == 0):
+if (echoaio.AIO_setInputGain(inputChannel, gain) == 0):
     print("Input channel " + str(inputChannel + 1) + " gain set to " + str(gain))
 else:
     print("Unable to set input channel " + str(inputChannel + 1) + " gain to " + str(gain))
@@ -44,7 +44,7 @@ else:
 #
 inputChannel = 1  # MIC2
 enabled = 1       # Enable constant current power
-if(echoaio.AIO_setConstantCurrentState(inputChannel, enabled) == 0):
+if (echoaio.AIO_setConstantCurrentState(inputChannel, enabled) == 0):
     print("Input channel " + str(inputChannel + 1) + " CCP enabled")
 else:
     print("Unable to enable CCP on input channel " + str(inputChannel + 1))
@@ -54,7 +54,7 @@ else:
 #
 #    Returns the current sample rate in Hz
 #
-if(echoaio.AIO_getSampleRate()):
+if (echoaio.AIO_getSampleRate()):
     print("Sample rate is: " + str(echoaio.AIO_getSampleRate()))
 else:
     print("Unable to get sample rate")
