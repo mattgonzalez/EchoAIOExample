@@ -1,9 +1,12 @@
 /*
   ==============================================================================
 
-    EchoAIOInterface library exports
+    EchoAPI Library Interface
 
-    Copyright (c) 2022 - Echo Digital Audio Corporation
+    Copyright (c) 2022-2025 - Echo Digital Audio Corporation
+
+    This header documents all exported functions from EchoAPI.dll for
+    controlling Echo AIO and ATS audio test interfaces.
 
   ==============================================================================
 */
@@ -30,21 +33,25 @@
  *
  * Return codes
  *
+ * All functions return 0 (ECHO_AIO_OK) on success, or a negative error code on failure.
+ *
  *---------------------------------------------------------------------------------------------------------------*/
 
-#define ECHO_AIO_OK 0
-#define ECHO_AIO_NOT_INITIALIZED 1
-#define ECHO_AIO_INVALID_INPUT_CHANNEL 2
-#define ECHO_AIO_INVALID_OUTPUT_CHANNEL 3
-#define ECHO_AIO_INVALID_PARAMETER 4
-#define ECHO_AIO_INVALID_TEDS_SIZE 5
-#define ECHO_AIO_NOT_FOUND 6
-#define ECHO_AIO_USB_COMMAND_FAILED 7
-#define ECHO_AIO_INVALID_MODULE_SLOT 8
-#define ECHO_AIO_BUFFER_TOO_SMALL 9
-#define ECHO_AIO_NOT_SUPPORTED 10
-#define ECHO_AIO_TEDS_DEVICE_NOT_FOUND 11
-#define ECHO_AIO_INVALID_VALUE 12
+#define ECHO_AIO_OK                     0
+#define ECHO_AIO_NOT_INITIALIZED       -1
+#define ECHO_AIO_INVALID_INPUT_CHANNEL -2
+#define ECHO_AIO_INVALID_OUTPUT_CHANNEL -3
+#define ECHO_AIO_INVALID_PARAMETER     -4
+#define ECHO_AIO_INVALID_BUFFER_SIZE   -5
+#define ECHO_AIO_NOT_FOUND             -6
+#define ECHO_AIO_USB_COMMAND_FAILED    -7
+#define ECHO_AIO_INVALID_MODULE_SLOT   -8
+#define ECHO_AIO_NOT_SUPPORTED         -9
+#define ECHO_AIO_TEDS_DEVICE_NOT_FOUND -10
+#define ECHO_AIO_INVALID_VALUE         -11
+#define ECHO_AIO_MISSING_PARAMETER     -12
+#define ECHO_AIO_TIMEOUT               -13
+#define ECHO_AIO_INVALID_POINTER       -14
 
 #ifdef __cplusplus
 extern "C"
@@ -61,9 +68,8 @@ extern "C"
         AIO_initialize
         AIO_shutdown
 
-		Call AIO_initialize before calling any other library functions to set up the library
-		Call AIO_shutdown before unloading the library to release memory and resources
-
+        Call AIO_initialize before calling any other library functions to set up the library.
+        Call AIO_shutdown before unloading the library to release memory and resources.
     */
     ECHO_AIO_API void AIO_initialize();
     ECHO_AIO_API void AIO_shutdown();
@@ -79,62 +85,101 @@ extern "C"
         AIO_getLibraryVersion
 
         Parameters
-            text                    Pointer to the buffer to receive the zero-terminated UTF-8 encoded string
-            textBufferBytes         Length of the buffer in bytes
+            text                Pointer to the buffer to receive the zero-terminated UTF-8 encoded string
+            textBufferBytes     Length of the buffer in bytes
 
     */
     ECHO_AIO_API void AIO_getLibraryVersion(char* const text, size_t textBufferBytes);
 
     /*
+        AIO_getErrorString
+
+        Get a human-readable error message for the most recent error.
+
+        Parameters
+            text                Pointer to the buffer to receive the zero-terminated UTF-8 encoded string
+            textBufferBytes     Length of the buffer in bytes
+    */
+    ECHO_AIO_API void AIO_getErrorString(char* const text, size_t textBufferBytes);
+
+    /*
         AIO_isAIOConnected
 
-        Returns true if an AIO is connected
+        Returns true if an Echo AIO device is connected.
     */
     ECHO_AIO_API int AIO_isAIOConnected();
 
     /*
+        AIO_isATSConnected
+
+        Returns true if an Echo ATS device is connected.
+    */
+    ECHO_AIO_API int AIO_isATSConnected();
+
+    /*
         AIO_getNumInputChannels
 
-        Returns the total number of input channels for the AIO
+        Returns the total number of input channels for the connected device.
     */
     ECHO_AIO_API int AIO_getNumInputChannels();
 
     /*
         AIO_getNumOutputChannels
 
-        Returns the total number of output channels for the AIO
+        Returns the total number of output channels for the connected device.
     */
     ECHO_AIO_API int AIO_getNumOutputChannels();
 
     /*
-        AIO_isComboModulePresent
+        AIO_getModuleType
 
         Parameter
             moduleSlot      0 for center audio module slot, 1 for outer audio module slot
 
-        Returns true if an AIO is connected and if the AIO has an AIO-C module in the specified slot
+        Returns the module type installed in the specified slot:
+            -1 = Unknown
+             0 = No module
+             1 = AIO-A (analog microphone)
+             2 = AIO-S (speaker monitor)
+             3 = AIO-L (line level)
+             4 = AIO-C (combo)
+             5 = AIO-H (headphone)
+             6 = AIO-T (TDM)
+             7 = AIO-B (Bluetooth)
+             8 = ATS analog module
+             9 = ATS digital module
+    */
+    ECHO_AIO_API int AIO_getModuleType(int moduleSlot);
+
+    /*
+        AIO_hasComboModule
+
+        Parameter
+            moduleSlot      0 for center audio module slot, 1 for outer audio module slot
+
+        Returns true if an AIO is connected and has an AIO-C module in the specified slot.
     */
     ECHO_AIO_API int AIO_hasComboModule(int moduleSlot);
-    
+
     /*
-    	AIO_isTModulePresent
+        AIO_hasTModule
 
-    	Parameter
-        	moduleSlot      0 for center audio module slot, 1 for outer audio module slot
+        Parameter
+            moduleSlot      0 for center audio module slot, 1 for outer audio module slot
 
-    	Returns true if an AIO is connected and if the AIO has an AIO-T module in the specified slot
+        Returns true if an AIO is connected and has an AIO-T module in the specified slot.
     */
     ECHO_AIO_API int AIO_hasTModule(int moduleSlot);
 
     /*
-    AIO_getErrorString
+        AIO_hasBluetoothModule
 
-    Parameters
-        text                    Pointer to the buffer to receive the zero-terminated UTF-8 encoded string
-        textBufferBytes         Length of the buffer in bytes
+        Parameter
+            moduleSlot      0 for center audio module slot, 1 for outer audio module slot
 
+        Returns true if an AIO is connected and has an AIO-B module in the specified slot.
     */
-    ECHO_AIO_API void AIO_getErrorString(char* const text, size_t textBufferBytes);
+    ECHO_AIO_API int AIO_hasBluetoothModule(int moduleSlot);
 
 
     /*-----------------------------------------------------------------------------------------------------------------
@@ -149,7 +194,7 @@ extern "C"
         Parameter
             inputChannel    Input channel number, starting at 0
 
-        Returns true if inputChannel has an input gain control
+        Returns true if inputChannel has an input gain control.
     */
     ECHO_AIO_API int AIO_hasInputGainControl(int inputChannel);
 
@@ -160,7 +205,10 @@ extern "C"
             inputChannel    Input channel number, starting at 0
             gain            Pointer to the variable to receive the gain value
 
-        Returns 0 if successful
+        For AIO devices, gain values are 1, 10, or 100 (multiplier).
+        For ATS devices, gain values are 1, 3, 10, 31, or 100 (multiplier).
+
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_getInputGain(int inputChannel, int* const gain);
 
@@ -169,12 +217,28 @@ extern "C"
 
         Parameters
             inputChannel    Input channel number, starting at 0
-            gain            Gain value (1, 10, or 100)
+            gain            Gain value
 
-        Returns 0 if successful
+        For AIO devices, valid gain values are 1, 10, or 100 (multiplier).
+        For ATS devices, valid gain values are 1, 3, 10, 31, or 100 (multiplier).
+
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_setInputGain(int inputChannel, int gain);
 
+    /*
+        AIO_setInputGainDirect
+
+        Set the input gain directly using multiplier values without internal conversion.
+        This is useful for ATS devices which use non-power-of-ten multipliers.
+
+        Parameters
+            inputChannel    Input channel number, starting at 0
+            gain            Gain multiplier value (1, 3, 10, 31, or 100 for ATS; 1, 10, or 100 for AIO)
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int AIO_setInputGainDirect(int inputChannel, int gain);
 
     /*
         AIO_hasConstantCurrentControl
@@ -182,7 +246,7 @@ extern "C"
         Parameter
             inputChannel    Input channel number, starting at 0
 
-        Returns true if inputChannel has a constant current power supply
+        Returns true if inputChannel has a constant current power supply.
     */
     ECHO_AIO_API int AIO_hasConstantCurrentControl(int inputChannel);
 
@@ -193,7 +257,7 @@ extern "C"
             inputChannel    Input channel number, starting at 0
             enabled         Pointer to the variable to receive the constant current power setting
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_getConstantCurrentState(int inputChannel, int* const enabled);
 
@@ -204,7 +268,7 @@ extern "C"
             inputChannel    Input channel number, starting at 0
             enabled         0 to disable the constant current power, 1 to enable
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_setConstantCurrentState(int inputChannel, int enabled);
 
@@ -215,16 +279,16 @@ extern "C"
         Parameter
             inputChannel    Input channel number, starting at 0
 
-        Returns true if inputChannel can read TEDS data
+        Returns true if inputChannel can read TEDS data.
     */
     ECHO_AIO_API int AIO_hasTEDS(int inputChannel);
 
 
     /*
-
         AIO_getTEDSProperties
 
-        Read and parse TEDS data from a specific microphone input; then, write TEDS properties to the specified buffer as JSON-formatted text.
+        Read and parse TEDS data from a specific microphone input; then, write TEDS properties
+        to the specified buffer as JSON-formatted text.
 
         Parameters
             inputChannel        Input channel number, starting at 0
@@ -234,7 +298,7 @@ extern "C"
 
         Both jsonText and jsonBytesRequired are optional parameters.
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_getTEDSProperties(int inputChannel, char* const jsonText, size_t jsonBufferBytes, size_t* jsonBytesRequired);
 
@@ -242,83 +306,81 @@ extern "C"
 
     /*-----------------------------------------------------------------------------------------------------------------
      *
-     * AMP outputs
+     * Output gain control
      *
      *---------------------------------------------------------------------------------------------------------------*/
 
-     /*
+    /*
         AIO_hasOutputGainControl
-
-        Output gain control is deprecated but still supported for backwards compatibility.
 
         Parameter
             outputChannel    Output channel number, starting at 0
 
-        Returns true if outputChannel has an output gain control
+        Returns true if outputChannel has an output gain control.
     */
     ECHO_AIO_API int AIO_hasOutputGainControl(int outputChannel);
 
     /*
         AIO_getOutputGain
 
-        Output gain control is deprecated but still supported for backwards compatibility.
-
         Parameters
             outputChannel   Output channel number, starting at 0
-            gain            Pointer to the variable to receive the gain value
+            gain            Pointer to the variable to receive the gain value (0-255)
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_getOutputGain(int outputChannel, int* const gain);
 
     /*
         AIO_setOutputGain
 
-        Output gain control is deprecated but still supported for backwards compatibility.
-
         Parameters
             outputChannel   Output channel number, starting at 0
-            gain            Gain value
-     
-        Gain values range from 0 to 255.
-            To match the 10x setting on the console, set the gain value to 255
-            For the 1x console setting, set the gain value to 26
+            gain            Gain value (0-255)
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_setOutputGain(int outputChannel, int gain);
 
-    /*
-       AIO_hasOutputLimitControl
 
-       Parameter
-           outputChannel    Output channel number, starting at 0
-
-       Returns true if outputChannel has an output limit control
-    */
-    ECHO_AIO_API int AIO_hasOutputLimitControl(int outputChannel);
+    /*-----------------------------------------------------------------------------------------------------------------
+     *
+     * Channel parameters
+     *
+     *---------------------------------------------------------------------------------------------------------------*/
 
     /*
-        AIO_getOutputLimitVolts
+        AIO_getInputChannelIntParameter
+        AIO_setInputChannelIntParameter
+
+        Get or set an integer parameter for an input channel.
 
         Parameters
-            outputChannel   Output channel number, starting at 0
-            limitVolts      Pointer to the variable to receive the limit value in volts
+            inputChannel    Input channel number, starting at 0
+            parameter       Parameter ID
+            value           Pointer to receive value (get) or value to set (set)
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
-    ECHO_AIO_API int AIO_getOutputLimitVolts(int outputChannel, double* const limitVolts);
+    ECHO_AIO_API int AIO_getInputChannelIntParameter(int inputChannel, int parameter, int* const value);
+    ECHO_AIO_API int AIO_setInputChannelIntParameter(int inputChannel, int parameter, int value);
 
     /*
-        AIO_setOutputLimitVolts
+        AIO_getOutputChannelIntParameter
+        AIO_setOutputChannelIntParameter
+
+        Get or set an integer parameter for an output channel.
 
         Parameters
-            outputChannel   Output channel number, starting at 0
-            limitVolts      Limit value in volts
+            moduleSlot      Module slot (0 or 1)
+            outputChannel   Output channel number within the module
+            parameter       Parameter ID
+            value           Pointer to receive value (get) or value to set (set)
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
-    ECHO_AIO_API int AIO_setOutputLimitVolts(int outputChannel, double limitVolts);
+    ECHO_AIO_API int AIO_getOutputChannelIntParameter(int moduleSlot, int outputChannel, int parameter, int* const value);
+    ECHO_AIO_API int AIO_setOutputChannelIntParameter(int moduleSlot, int outputChannel, int parameter, int value);
 
 
     /*-----------------------------------------------------------------------------------------------------------------
@@ -331,8 +393,7 @@ extern "C"
     /*
         AIO_getASIOPreferredBufferSize
 
-        Returns the ASIO driver preferred buffer size in samples
-
+        Returns the ASIO driver preferred buffer size in samples.
     */
     ECHO_AIO_API int AIO_getASIOPreferredBufferSize();
 
@@ -340,17 +401,16 @@ extern "C"
         AIO_setASIOPreferredBufferSize
 
         Parameter
-            bufferSize              Preferred buffer size in samples
+            bufferSize      Preferred buffer size in samples
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_setASIOPreferredBufferSize(int bufferSize);
 
     /*
         AIO_getSampleRate
 
-        Returns the current sample rate in Hz
-
+        Returns the current sample rate in Hz.
     */
     ECHO_AIO_API int AIO_getSampleRate();
 
@@ -358,11 +418,28 @@ extern "C"
         AIO_setSampleRate
 
         Parameter
-            sampleRate              Sample rate in Hz
+            sampleRate      Sample rate in Hz
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_setSampleRate(int sampleRate);
+
+    /*
+        AIO_isWASAPIEnabled
+
+        Returns true if WASAPI support is enabled.
+    */
+    ECHO_AIO_API int AIO_isWASAPIEnabled();
+
+    /*
+        AIO_setWASAPIEnabled
+
+        Parameter
+            enabled         0 to disable, 1 to enable
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int AIO_setWASAPIEnabled(int enabled);
 #endif
 
 
@@ -379,37 +456,34 @@ extern "C"
         Read-only integer parameter for the AIO-C module firmware version; reads -1 on error.
 
         AIO_COMBO_MODULE_PARAMETER_SERIAL_NUMBER
-        Read-only integer parameter for the AIO-C module serial number; reads -1 on error
+        Read-only integer parameter for the AIO-C module serial number; reads -1 on error.
 
         AIO_COMBO_MODULE_PARAMETER_AUX_OUT
         Integer parameter for the AIO-C AUX OUT pins; bits 0-7 of the value are a bit mask corresponding to the
-        state of the AUX OUT pins. 
+        state of the AUX OUT pins.
 
         AIO_COMBO_MODULE_PARAMETER_AUX_IN
         Read-only integer parameter for the AIO-C AUX IN pins; bits 0-7 of the value are a bit mask corresponding to the
         state of the AUX IN pins.
 
         AIO_COMBO_MODULE_PARAMETER_5VDC_ENABLE
-        Integer parameter to enable or disable the 5 VDC power supply; 0 to disable, 1 to enable
+        Integer parameter to enable or disable the 5 VDC power supply; 0 to disable, 1 to enable.
 
         AIO_COMBO_MODULE_PARAMETER_VARIABLE_DC_POWER_ENABLE
-        Integer parameter to enable or disable the variable DC power supply; 0 to disable, 1 to enable
+        Integer parameter to enable or disable the variable DC power supply; 0 to disable, 1 to enable.
 
         AIO_COMBO_MODULE_PARAMETER_VARIABLE_DC_POWER_TARGET_MILLIVOLTS
         Integer parameter to set the target voltage in millivolts for the variable DC power supply, from 600 mV to 5000 mV.
 
         AIO_COMBO_MODULE_PARAMETER_VARIABLE_DC_POWER_MEASURED_MILLIVOLTS
-        Read-only integer parameter for the actual measured voltage for the variable DC power supply
+        Read-only integer parameter for the actual measured voltage for the variable DC power supply.
 
         AIO_COMBO_MODULE_PARAMETER_VARIABLE_DC_POWER_MEASURED_CURRENT
         Read-only double precision floating point parameter for the measured output current in amperes for the variable DC power supply.
 
         AIO_COMBO_MODULE_PARAMETER_MEASURED_CURRENT_RANGE
         Integer parameter to set the variable power supply current measurement range; must be one of the AIO_COMBO_MODULE_CURRENT_MEASUREMENT
-        constants (see below)
-
-        AIO_COMBO_MODULE_PARAMETER_OVER_CURRENT_SENSE_ENABLE
-        Integer parameter to enable or disable over current sensing for the variable DC power supply; 0 to disable, 1 to enable
+        constants (see below).
 
         AIO_COMBO_MODULE_PARAMETER_OVER_CURRENT_THRESHOLD
         Double precision floating point parameter for the over current threshold in amperes; note that the value range for this parameter is determined by the
@@ -421,29 +495,31 @@ extern "C"
     */
 
     /*
+        AIO-T module parameters
+
         AIO_T_MODULE_PARAMETER_FIRMWARE_VERSION
         Read-only integer parameter for the AIO-T module firmware version; reads -1 on error.
-        
+
         AIO_T_MODULE_PARAMETER_CLOCK_SINK
         Integer parameter for the AIO-T module clock sink; 0 to disable, 1 to enable.
-        
+
         AIO_T_MODULE_PARAMETER_BITS_PER_FRAME
         Sets the number of bits per TDM Frame; 01 - 64 bits/frame(not implemented), 10 - 128 bits/frame(not implemented), 11 - 256 bits/frame.
-        
+
         AIO_T_MODULE_PARAMETER_BITS_PER_WORD
         Sets the number of bits per TDM Word; 01 - 24 bits/word, 10 - 32 bits/word.
-        
+
         AIO_T_MODULE_PARAMETER_INVERT_SCLK
         Integer parameter to invert the SCLK signal; 0 - to Data and FSYNC clocks out on the falling edge of SCLK, 1 - Data and FSYNC clocks out on the rising edge of SCLK.
-        
+
         AIO_T_MODULE_PARAMETER_SHIFT_ENABLED
         [Clock source mode] Integer parameter that delays the sampling of input SHIFT bits; 0 - TDM input sampling is aligned with TDM input, 1 - TDM output is advanced "SHIFT" bits adead of the TDM input.
         [Clock sink mode] Integer parameter that enables SCLK output on BNC connector(Only valid for versions prior to 2.01. Must be set for versions 2.01 thru 2.0e, ignored for 2.0f and above)
         0 - TDM output is aligned with TDM input, 1 - TDM output is advanced "SHIFT" bits ahead of the TDM input.
-        
+
         AIO_T_MODULE_PARAMETER_AUDIO_DATA_SHIFT_BITS,
         Integer parameter that set the number of bits to delay INPUT (clock source mode) or advance OUTPUT (clock sink mode) when SHIFT_EN is set. (7 max, 0 is interpreted as 1 for backward compatibility)
-        
+
         AIO_T_MODULE_PARAMETER_FSYNC_PHASE_DELAY,
         [Clock source mode] Integer parameter that determines whether FSYNC clocks out along with data or is delayed by 1/2 SCLK cycle; 0 - FSYNC clocks out along with data, 1 - FSYNC is delayed by 1/2 SCLK cycle
         [Clock sink mode] Integer parameter that determines whether INPUT is delayed by 1/2 SLCK cycle; 0 - INPUT is sampled normally, 1 - INPUT sampling is delayed by 1/2 SCLK cycle
@@ -487,6 +563,11 @@ extern "C"
         AIO_T_MODULE_PARAMETER_FSYNC_WIDTH
     };
 
+    enum AIOHeadphoneModuleParameters
+    {
+        AIO_HEADPHONE_MODULE_PARAMETER_FIRMWARE_VERSION = 0xe000
+    };
+
     enum AIOComboCurrentMeasurementRanges
     {
         AIO_COMBO_MODULE_CURRENT_MEASUREMENT_250UA = 0, // 0 to 256 microamps
@@ -503,7 +584,7 @@ extern "C"
              parameter      Parameter number (e.g. AIO_COMBO_MODULE_PARAMETER_AUX_OUT)
              value          Pointer to the integer variable to receive the parameter value
 
-         Returns 0 if successful
+         Returns 0 if successful.
      */
     ECHO_AIO_API int AIO_getModuleIntParameter(int moduleSlot, int parameter, int* const value);
 
@@ -515,10 +596,10 @@ extern "C"
             parameter      Parameter number (e.g. AIO_COMBO_MODULE_PARAMETER_AUX_OUT)
             value          Integer parameter value
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_setModuleIntParameter(int moduleSlot, int parameter, int value);
- 
+
     /*
          AIO_getModuleDoubleParameter
 
@@ -527,7 +608,7 @@ extern "C"
              parameter      Parameter number (e.g. AIO_COMBO_MODULE_PARAMETER_AUX_OUT)
              value          Pointer to the double-precision floating point variable to receive the parameter value
 
-         Returns 0 if successful
+         Returns 0 if successful.
      */
     ECHO_AIO_API int AIO_getModuleDoubleParameter(int moduleSlot, int parameter, double* const value);
 
@@ -539,19 +620,190 @@ extern "C"
             parameter      Parameter number (e.g. AIO_COMBO_MODULE_PARAMETER_AUX_OUT)
             value          Double-precision floating point value
 
-        Returns 0 if successful
+        Returns 0 if successful.
     */
     ECHO_AIO_API int AIO_setModuleDoubleParameter(int moduleSlot, int parameter, double value);
 
     /*
-     	AIO_updateTDM
+        AIO_updateTDM
 
-     	Parameters
-        	moduleSlot     0 for center audio module slot, 1 for outer audio module slot
+        Apply TDM module parameter changes to the hardware.
 
-     	Returns 0 if successful
- 	*/
+        Parameters
+            moduleSlot     0 for center audio module slot, 1 for outer audio module slot
+
+        Returns 0 if successful.
+    */
     ECHO_AIO_API int AIO_updateTDM(int moduleSlot);
+
+
+    /*-----------------------------------------------------------------------------------------------------------------
+     *
+     * Device parameters
+     *
+     *---------------------------------------------------------------------------------------------------------------*/
+
+    /*
+        Device parameter IDs
+
+        ECHO_DEVICE_PARAMETER_CLOCK_SOURCE
+        Integer parameter for clock source selection:
+            0 = Internal clock
+            1 = USB clock
+            2 = Center module clock
+            3 = Outer module clock
+    */
+    enum EchoDeviceParameters
+    {
+        ECHO_DEVICE_PARAMETER_CLOCK_SOURCE = 0xd000
+    };
+
+    /*
+        AIO_getDeviceIntParameter
+        AIO_setDeviceIntParameter
+
+        Get or set an integer device-level parameter.
+
+        Parameters
+            parameter       Parameter ID
+            value           Pointer to receive value (get) or value to set (set)
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int AIO_getDeviceIntParameter(int parameter, int* const value);
+    ECHO_AIO_API int AIO_setDeviceIntParameter(int parameter, int value);
+
+
+    /*-----------------------------------------------------------------------------------------------------------------
+     *
+     * ATS-specific functions
+     *
+     * These functions are only available when an Echo ATS device is connected.
+     *
+     *---------------------------------------------------------------------------------------------------------------*/
+
+    /*
+        ATS_writeI2C
+        ATS_readI2C
+
+        Low-level I2C communication with the ATS hardware.
+
+        Parameters
+            sdaSelect           SDA line select
+            i2cAddress          I2C device address
+            registerAddress     Register address
+            registerLength      Length of data
+            data                Pointer to data buffer
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int ATS_writeI2C(int sdaSelect, int i2cAddress, int registerAddress, int registerLength, unsigned char* const data);
+    ECHO_AIO_API int ATS_readI2C(int sdaSelect, int i2cAddress, int registerAddress, int registerLength, unsigned char* const data);
+
+    /*
+        ATS_getAuxOut
+        ATS_setAuxOut
+        ATS_getAuxIn
+
+        Control the 4-bit AUX digital I/O pins on the ATS.
+
+        Parameters
+            bits                4-bit bitmask (0-15) for AUX pin states
+
+        ATS_getAuxIn reads the current state of the AUX input pins.
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int ATS_getAuxOut(unsigned char* bits);
+    ECHO_AIO_API int ATS_setAuxOut(unsigned char bits);
+    ECHO_AIO_API int ATS_getAuxIn(unsigned char* bits);
+
+    /*
+        ATS_getDigitalIOMode
+        ATS_setDigitalIOMode
+
+        Get or set the digital I/O mode.
+
+        Parameters
+            mode                0 = S/PDIF mode, 1 = Word clock mode
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int ATS_getDigitalIOMode(unsigned char* mode);
+    ECHO_AIO_API int ATS_setDigitalIOMode(unsigned char mode);
+
+    /*
+        ATS_getWordClockTerminated
+        ATS_setWordClockTerminated
+
+        Get or set the word clock termination state.
+
+        Parameters
+            terminated          0 = not terminated, 1 = terminated
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int ATS_getWordClockTerminated(int* terminated);
+    ECHO_AIO_API int ATS_setWordClockTerminated(int terminated);
+
+    /*
+        ATS_getImpedanceMode
+        ATS_setImpedanceMode
+
+        Get or set the impedance measurement mode.
+
+        Parameters
+            enabled             0 = disabled, 1 = enabled
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int ATS_getImpedanceMode(int* enabled);
+    ECHO_AIO_API int ATS_setImpedanceMode(int enabled);
+
+    /*
+        ATS_getSerialNumber
+
+        Get the ATS device serial number.
+
+        Parameters
+            serialNumber        Pointer to receive the serial number
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int ATS_getSerialNumber(unsigned int* serialNumber);
+
+    /*
+        ATS_getAnalogInputMode
+        ATS_setAnalogInputMode
+
+        Get or set the analog input mode for an ATS input channel.
+
+        Parameters
+            channel             Input channel number (0-7)
+            mode                0 = Loopback mode (output routed to input)
+                                1 = Analog input mode (external connector)
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int ATS_getAnalogInputMode(int channel, int* mode);
+    ECHO_AIO_API int ATS_setAnalogInputMode(int channel, int mode);
+
+    /*
+        ATS_getAnalogOutputMode
+        ATS_setAnalogOutputMode
+
+        Get or set the analog output mode for an ATS output channel.
+
+        Parameters
+            channel             Output channel number (0-3)
+            mode                0 = Line level output
+                                1 = Amplifier mode
+                                2 = Headphone mode
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int ATS_getAnalogOutputMode(int channel, int* mode);
+    ECHO_AIO_API int ATS_setAnalogOutputMode(int channel, int mode);
 
 
     /*-----------------------------------------------------------------------------------------------------------------
@@ -559,18 +811,14 @@ extern "C"
      * Constants
      *
      *---------------------------------------------------------------------------------------------------------------*/
-     
-    /*
-    
-        String for control changed broadcast event
 
+    /*
+        String for control changed broadcast event
     */
     static const char AIO_notificationString[] = "Echo AIO control change";
 
     /*
-    
         Number of AIO module slots
-
     */
     static const int AIO_numModuleSlots = 2;
 
