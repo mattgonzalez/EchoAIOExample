@@ -31,7 +31,7 @@ The Echo API Library is installed as part of the Echo Control Panel application.
 **Default installation path:** `C:\Program Files\Echo Test Interfaces\EchoAPI.dll`
 
 ### macOS
-Download the Echo Control Panel DMG from [echotm.com](https://echotm.com/). When mounted, the DMG contains `libEchoAPI.dylib`. Copy this file to your project's working directory or a location in your library search path.
+Download the Echo Control Panel DMG from [support.echotm.com/ats/installer](https://support.echotm.com/ats/installer). When mounted, the DMG contains `libEchoAPI.dylib`. Copy this file to your project's working directory or a location in your library search path.
 
 ## Quick Start
 
