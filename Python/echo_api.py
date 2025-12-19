@@ -26,10 +26,12 @@ import platform
 
 
 # Default DLL paths
+# Windows: Installed by Echo Control Panel
+# macOS: Copy libEchoAPI.dylib from the Echo Control Panel DMG to your project directory
 if platform.system() == "Windows":
     DEFAULT_DLL_PATH = Path("C:/Program Files/Echo Test Interfaces/EchoAPI.dll")
 else:
-    DEFAULT_DLL_PATH = Path("/Library/Application Support/Echo Test Interfaces/libEchoAPI.dylib")
+    DEFAULT_DLL_PATH = Path("./libEchoAPI.dylib")
 
 
 class ModuleType(IntEnum):

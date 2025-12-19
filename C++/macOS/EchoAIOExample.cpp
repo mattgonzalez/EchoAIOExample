@@ -12,8 +12,8 @@
 #include <dlfcn.h>
 #include "../../EchoAIOInterface.h"
 
-// Default installation path for Echo API
-const char* ECHO_API_PATH = "/Library/Application Support/Echo Test Interfaces/libEchoAPI.dylib";
+// Default path for Echo API - copy libEchoAPI.dylib from the Echo Control Panel DMG to your project directory
+const char* ECHO_API_PATH = "./libEchoAPI.dylib";
 
 // Function pointer types
 using AIO_initialize_t = void (*)();
@@ -129,7 +129,7 @@ int main(int /*argc*/, const char * /*argv*/ [])
     {
         std::cout << "Unable to load libEchoAPI.dylib\n";
         std::cout << "Expected path: " << ECHO_API_PATH << "\n";
-        std::cout << "Please verify the Echo Control Panel is installed.\n";
+        std::cout << "Copy libEchoAPI.dylib from the Echo Control Panel DMG to your project directory.\n";
         std::cout << "Error: " << dlerror() << "\n";
         return 1;
     }

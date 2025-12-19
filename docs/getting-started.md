@@ -21,8 +21,8 @@ The Echo API Library is automatically installed with the Echo Control Panel appl
 
 ### macOS
 
-1. Download and install the Echo Control Panel from [echotm.com](https://echotm.com/)
-2. The library is installed to: `/Library/Application Support/Echo Test Interfaces/libEchoAPI.dylib`
+1. Download the Echo Control Panel DMG from [echotm.com](https://echotm.com/)
+2. Mount the DMG and copy `libEchoAPI.dylib` to your project directory
 3. Copy `EchoAIOInterface.h` from this repository to your project
 
 ## Verifying Your Installation
@@ -46,7 +46,7 @@ Test-Path "C:\Program Files\Echo Test Interfaces\EchoAPI.dll"
 
 **macOS (Terminal):**
 ```bash
-ls -la "/Library/Application Support/Echo Test Interfaces/libEchoAPI.dylib"
+ls -la ./libEchoAPI.dylib
 ```
 
 ## Your First Program
