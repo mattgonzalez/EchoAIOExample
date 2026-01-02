@@ -4,16 +4,6 @@ The Echo API Library provides programmatic control of Echo Digital Audio test in
 
 ## Supported Devices
 
-### Echo AIO
-A modular audio test interface with interchangeable audio modules:
-- **AIO-A** - Analog microphone inputs with IEPE/CCP support
-- **AIO-S** - Speaker monitor inputs
-- **AIO-L** - Line level inputs/outputs
-- **AIO-C** - Combo module with programmable power supply and GPIO
-- **AIO-H** - Headphone amplifier outputs
-- **AIO-T** - TDM digital audio interface
-- **AIO-B** - Bluetooth audio module
-
 ### Echo ATS
 A precision audio test system with:
 - 8 analog inputs with selectable gain (1x, 3x, 10x, 31x, 100x)
@@ -22,6 +12,14 @@ A precision audio test system with:
 - 4-bit AUX GPIO
 - Impedance measurement mode
 - I2C passthrough
+
+### Echo AIO
+A modular audio test interface with interchangeable audio modules:
+- **AIO-A** - Analog microphone inputs with IEPE/CCP support
+- **AIO-S** - Speaker monitor inputs
+- **AIO-L** - Line level inputs/outputs
+- **AIO-H** - Headphone amplifier outputs
+- **AIO-T** - TDM digital audio interface
 
 ## Installation
 
