@@ -230,6 +230,38 @@ int AIO_setConstantCurrentState(int inputChannel, int enabled);
 - `inputChannel` - Channel number (0-based)
 - `enabled` - 0 to disable, 1 to enable
 
+### AIO_hasInputDCCoupling
+
+Check if an input channel supports DC coupling. (ATS analog inputs.)
+
+```c
+int AIO_hasInputDCCoupling(int inputChannel);
+```
+
+### AIO_getInputDCCoupling
+
+Get the DC coupling state for an input channel.
+
+```c
+int AIO_getInputDCCoupling(int inputChannel, int* enabled);
+```
+
+**Parameters:**
+- `inputChannel` - Channel number (0-based)
+- `enabled` - Pointer to receive state (0 = AC coupled, 1 = DC coupled)
+
+### AIO_setInputDCCoupling
+
+Set the DC coupling state for an input channel. DC coupling and constant current power (IEPE) are mutually exclusive in hardware — enabling DC coupling turns off CCP on that channel, and vice versa.
+
+```c
+int AIO_setInputDCCoupling(int inputChannel, int enabled);
+```
+
+**Parameters:**
+- `inputChannel` - Channel number (0-based)
+- `enabled` - 0 for AC coupling, 1 to enable DC coupling
+
 ### AIO_hasTEDS
 
 Check if an input channel supports TEDS.

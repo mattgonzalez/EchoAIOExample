@@ -170,7 +170,7 @@ All Echo API programs follow this pattern:
 1. **Load the library** - Load the DLL/dylib
 2. **Initialize** - Call `AIO_initialize()` before any other functions
 3. **Check device** - Use `AIO_isAIOConnected()` or `AIO_isATSConnected()`
-4. **Configure and control** - Set gains, enable CCP, read TEDS, etc.
+4. **Configure and control** - Set gains, enable CCP or DC coupling, read TEDS, etc.
 5. **Shutdown** - Call `AIO_shutdown()` before unloading
 
 ## Error Handling

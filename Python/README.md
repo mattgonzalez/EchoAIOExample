@@ -90,6 +90,9 @@ api.set_input_gain_direct(channel, multiplier)  # Set gain (1/3/10/31/100)
 api.has_constant_current_control(channel)  # Check CCP support
 api.get_constant_current_state(channel)    # Get CCP state
 api.set_constant_current_state(channel, enabled)  # Enable/disable CCP
+api.has_input_dc_coupling(channel)         # Check DC coupling support (ATS)
+api.get_input_dc_coupling(channel)         # Get DC coupling state
+api.set_input_dc_coupling(channel, enabled)  # Enable/disable DC coupling (disables CCP)
 ```
 
 ### Output Channels

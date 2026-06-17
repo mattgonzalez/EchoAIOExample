@@ -16,6 +16,7 @@ The Echo ATS is a precision audio test system designed for automated testing of 
 
 - Selectable input gain (1x, 3x, 10x, 31x, 100x)
 - IEPE/CCP constant current power for microphones
+- DC coupling for analog inputs (mutually exclusive with CCP)
 - TEDS microphone identification
 - Configurable analog input mode (Loopback or External)
 - Configurable analog output mode (Line, Amplifier, Headphone)
@@ -98,6 +99,26 @@ if (AIO_hasConstantCurrentControl(0))
     printf("CCP enabled: %s\n", enabled ? "yes" : "no");
 }
 ```
+
+## DC Coupling
+
+The ATS analog inputs support DC coupling. By default inputs are AC coupled; enable DC coupling to pass DC and low-frequency content.
+
+```c
+// Check if channel supports DC coupling
+if (AIO_hasInputDCCoupling(0))
+{
+    // Enable DC coupling on channel 0
+    AIO_setInputDCCoupling(0, 1);
+
+    // Verify state
+    int enabled;
+    AIO_getInputDCCoupling(0, &enabled);
+    printf("DC coupling: %s\n", enabled ? "DC" : "AC");
+}
+```
+
+> **Note:** DC coupling and constant current power (CCP/IEPE) are mutually exclusive in hardware. Enabling DC coupling turns off CCP on that channel, and enabling CCP turns off DC coupling.
 
 ## Analog Input Mode
 

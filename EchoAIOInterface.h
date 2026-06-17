@@ -272,6 +272,41 @@ extern "C"
     */
     ECHO_AIO_API int AIO_setConstantCurrentState(int inputChannel, int enabled);
 
+    /*
+        AIO_hasInputDCCoupling
+
+        Parameter
+            inputChannel    Input channel number, starting at 0
+
+        Returns true if inputChannel supports DC coupling.
+    */
+    ECHO_AIO_API int AIO_hasInputDCCoupling(int inputChannel);
+
+    /*
+        AIO_getInputDCCoupling
+
+        Parameters
+            inputChannel    Input channel number, starting at 0
+            enabled         Pointer to the variable to receive the DC coupling state (1 = DC coupled, 0 = AC coupled)
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int AIO_getInputDCCoupling(int inputChannel, int* const enabled);
+
+    /*
+        AIO_setInputDCCoupling
+
+        DC coupling and constant current power (IEPE) are mutually exclusive in hardware;
+        enabling DC coupling turns off constant current power on that channel, and vice versa.
+
+        Parameters
+            inputChannel    Input channel number, starting at 0
+            enabled         1 to enable DC coupling, 0 for AC coupling
+
+        Returns 0 if successful.
+    */
+    ECHO_AIO_API int AIO_setInputDCCoupling(int inputChannel, int enabled);
+
 
     /*
         AIO_hasTEDS

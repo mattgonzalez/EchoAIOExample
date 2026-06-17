@@ -53,6 +53,9 @@ int main()
 
         // Enable CCP (constant current power) for IEPE microphones
         AIO_setConstantCurrentState(0, 1);
+
+        // Enable DC coupling on another input (ATS; mutually exclusive with CCP)
+        AIO_setInputDCCoupling(1, 1);
     }
     else if (AIO_isAIOConnected())
     {
