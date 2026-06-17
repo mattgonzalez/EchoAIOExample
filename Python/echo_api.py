@@ -172,6 +172,12 @@ class EchoAPI:
         dll.AIO_getConstantCurrentState.restype = c_int
         dll.AIO_setConstantCurrentState.argtypes = [c_int, c_int]
         dll.AIO_setConstantCurrentState.restype = c_int
+        dll.AIO_hasInputDCCoupling.argtypes = [c_int]
+        dll.AIO_hasInputDCCoupling.restype = c_int
+        dll.AIO_getInputDCCoupling.argtypes = [c_int, POINTER(c_int)]
+        dll.AIO_getInputDCCoupling.restype = c_int
+        dll.AIO_setInputDCCoupling.argtypes = [c_int, c_int]
+        dll.AIO_setInputDCCoupling.restype = c_int
         dll.AIO_hasTEDS.argtypes = [c_int]
         dll.AIO_hasTEDS.restype = c_int
         dll.AIO_getTEDSProperties.argtypes = [c_int, c_char_p, c_size_t, POINTER(c_size_t)]
@@ -388,6 +394,25 @@ class EchoAPI:
         self._check_initialized()
         result = self._dll.AIO_setConstantCurrentState(channel, int(enabled))
         self._check_error(result, f"Set CCP state for channel {channel}")
+
+    def has_input_dc_coupling(self, channel: int) -> bool:
+        """Check if input channel supports DC coupling."""
+        self._check_initialized()
+        return bool(self._dll.AIO_hasInputDCCoupling(channel))
+
+    def get_input_dc_coupling(self, channel: int) -> bool:
+        """Get DC coupling state for a channel (True = DC coupled, False = AC coupled)."""
+        self._check_initialized()
+        enabled = c_int()
+        result = self._dll.AIO_getInputDCCoupling(channel, byref(enabled))
+        self._check_error(result, f"Get DC coupling state for channel {channel}")
+        return bool(enabled.value)
+
+    def set_input_dc_coupling(self, channel: int, enabled: bool):
+        """Set DC coupling state for a channel (disables constant current power when enabled)."""
+        self._check_initialized()
+        result = self._dll.AIO_setInputDCCoupling(channel, int(enabled))
+        self._check_error(result, f"Set DC coupling state for channel {channel}")
 
     def has_teds(self, channel: int) -> bool:
         """Check if input channel supports TEDS."""
